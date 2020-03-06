@@ -1,9 +1,12 @@
+
 #include <iostream>
 #include <opencv.hpp>
+#include <stdlib.h>
 using namespace cv;
+using namespace std;
 int main()
 {
-	cv::Mat src_color = imread("D:\\3.jpg");
+	cv::Mat src_color = imread("D:\\3.png");
 	std::vector<cv::Mat>channels;
 	cv::split(src_color, channels);
 	cv::Mat B = channels.at(0);
