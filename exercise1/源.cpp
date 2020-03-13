@@ -6,15 +6,29 @@ using namespace cv;
 using namespace std;
 int main()
 {
-	cv::Mat src_color = imread("D:\\3.png");
-	std::vector<cv::Mat>channels;
-	cv::split(src_color, channels);
-	cv::Mat B = channels.at(0);
-	cv::Mat G = channels.at(1);
-	cv::Mat R = channels.at(2);
-	cv::imshow("red", R);
-	cv::imshow("blue", B);
-	cv::imshow("green", G);
-	cv::imshow("orginal Mat", src_color);
-	waitKey(0);
+	VideoCapture cap(0);
+	double scale = 0.5;
+	double i_minH = 0;
+	double i_maxH = 20;
+	double i_minS = 43;
+	double i_maxS = 255;
+	double i_minV = 55;
+	double i_maxV = 255;
+	while(1)
+{
+		Mat frame;
+		Mat hsvMat;
+		Mat detectMat;
+		cap >> frame;
+		Size ResImgSiz = Size(frame.cols*scale, frame.rows*scale);
+		Mat rFrame = Mat(ResImgSiz, frame.type());
+		resize(frame, rFrame, ResImgSiz, INTER_LINEAR);
+
+		cvtColor(rFrame, hsvMat, COLOR_BGR2HSV);
+		rFrame.copyTo(detectMat);
+		cv::inRange(hsvMat, Scalar(i_minH, i_minS, i_minV), Scalar(i_maxH, i_maxS, i_maxV), detectMat);
+		imshow("while:in the range", detectMat);
+		imshow("frame", rFrame);
+		waitKey(30);
+	}
 }
