@@ -6,29 +6,23 @@ using namespace cv;
 using namespace std;
 int main()
 {
-	VideoCapture cap(0);
-	double scale = 0.5;
-	double i_minH = 0;
-	double i_maxH = 20;
-	double i_minS = 43;
-	double i_maxS = 255;
-	double i_minV = 55;
-	double i_maxV = 255;
-	while(1)
-{
-		Mat frame;
-		Mat hsvMat;
-		Mat detectMat;
-		cap >> frame;
-		Size ResImgSiz = Size(frame.cols*scale, frame.rows*scale);
-		Mat rFrame = Mat(ResImgSiz, frame.type());
-		resize(frame, rFrame, ResImgSiz, INTER_LINEAR);
+	cv::Mat	M1;
+	cv::Mat	result1;
+	cv::Mat	result2;
+	cv::Mat	result3;
+	cv::Mat	result4;
+	cv::Mat srcMat = imread("D:\\4.png", 0);
+	cv::threshold(srcMat, M1, 0, 255, THRESH_OTSU);
+	Mat kernel = getStructuringElement(MORPH_RECT, Size(3, 3));
+	morphologyEx(srcMat, result1, 0, kernel);
+	morphologyEx(srcMat, result2, 1, kernel);
+	morphologyEx(srcMat, result3, 2, kernel);
+	morphologyEx(srcMat, result4, 3, kernel);
+	imshow("result1", result1);
+	imshow("result2", result2);
+	imshow("result3", result3);
+	imshow("result4", result4);
+	waitKey(0);
+	return 0;
 
-		cvtColor(rFrame, hsvMat, COLOR_BGR2HSV);
-		rFrame.copyTo(detectMat);
-		cv::inRange(hsvMat, Scalar(i_minH, i_minS, i_minV), Scalar(i_maxH, i_maxS, i_maxV), detectMat);
-		imshow("while:in the range", detectMat);
-		imshow("frame", rFrame);
-		waitKey(30);
-	}
 }
