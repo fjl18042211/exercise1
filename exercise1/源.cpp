@@ -31,9 +31,9 @@ int main()
 			cv::imshow("dst", dst);
 
 		}
-
+		waitKey(30);
 	}
-	waitKey(30);
+	
 	return 0;
 
 }
