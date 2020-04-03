@@ -18,22 +18,33 @@ int main()
 	while (1)
 	{
 		cv::Mat frame;
-		cv::Mat dst;
-        bool rSucess=cap.read(frame);
+		cv::Mat dst1;
+		cv::Mat dst2;
+		cv::Mat dx;
+		cv::Mat abs_dx;
+		cv::Mat dy;
+		cv::Mat abs_dy;
+		bool rSucess = cap.read(frame);
 		if (!rSucess)
 		{
 			std::cout << "不能从视频文件中读取帧" << std::endl;
 			break;
 		}
 		else
-		{   
-			cv::medianBlur(frame, dst, 3);
-			cv::imshow("dst", dst);
+		{
+
+			Sobel(frame, dx, CV_16SC1, 1, 0, 3);
+			convertScaleAbs(dx, abs_dx);
+			Sobel(frame, dy, CV_16SC1, 0, 1, 3);
+			convertScaleAbs(dy, abs_dy);
+			Canny(dx, dy, dst1, 20, 60);
+			cv::imshow("dst1", dst1);
+			Canny(frame, dst2, 20, 60);
+			cv::imshow("dst2", dst2);
 
 		}
 		waitKey(30);
 	}
-	
-	return 0;
 
+	return 0;
 }
