@@ -6,45 +6,18 @@ using namespace cv;
 using namespace std;
 int main()
 {
-	VideoCapture cap;
-	cap.open(0);
-	if (!cap.isOpened())
-	{
-		std::cout << "不能打开视频文件" << std::endl;
-		return -1;
-	}
-	double fps = cap.get(CAP_PROP_FPS);
-	std::cout << "fps" << fps << std::endl;
-	while (1)
-	{
-		cv::Mat frame;
-		cv::Mat dst1;
-		cv::Mat dst2;
-		cv::Mat dx;
-		cv::Mat abs_dx;
-		cv::Mat dy;
-		cv::Mat abs_dy;
-		bool rSucess = cap.read(frame);
-		if (!rSucess)
-		{
-			std::cout << "不能从视频文件中读取帧" << std::endl;
-			break;
-		}
-		else
-		{
+	cv::Mat dstMat;
+	cv::Mat srcMat = cv::imread("D:\\lena.jpg", 1);
+	if (srcMat.empty()) return-1;
+	float angle = -10, scale = 1;
+	cv::Point2f center(srcMat.cols*0.5, srcMat.rows*0.5);
+	Mat rot = cv::getRotationMatrix2D(center, angle, scale);
+	cv::Rect bbox = cv::RotatedRect(center, srcMat.size(), angle).boundingRect();
+	rot.at<double>(0, 2) += bbox.width / 2.0 - center.x;
+	rot.at<double>(1, 2) += bbox.height / 2.0 - center.y;
+	cv::warpAffine(srcMat, dstMat, rot, bbox.size());
+	cv::imshow("src", srcMat);
+	cv::imshow("dst", dstMat);
+	cv::waitKey(0);
 
-			Sobel(frame, dx, CV_16SC1, 1, 0, 3);
-			convertScaleAbs(dx, abs_dx);
-			Sobel(frame, dy, CV_16SC1, 0, 1, 3);
-			convertScaleAbs(dy, abs_dy);
-			Canny(dx, dy, dst1, 20, 60);
-			cv::imshow("dst1", dst1);
-			Canny(frame, dst2, 20, 60);
-			cv::imshow("dst2", dst2);
-
-		}
-		waitKey(30);
-	}
-
-	return 0;
 }
